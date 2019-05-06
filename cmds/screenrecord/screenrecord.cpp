@@ -568,7 +568,7 @@ static status_t runEncoder(const sp<MediaCodec>& encoder,
         const Vector< sp<MediaCodecBuffer> >& audioEncoderInBuf,
         const sp<MediaMuxer>& muxer, FILE* rawFp, const sp<IBinder>& mainDpy,
         const sp<IBinder>& virtualDpy, uint8_t orientation) {
-    status_t err, processTrack;
+    status_t err;
     ssize_t trackIdx = -1,
         audioTrackIdx = -1;
     uint32_t debugNumFrames = 0,
@@ -640,12 +640,10 @@ static status_t runEncoder(const sp<MediaCodec>& encoder,
         }
 
         // Process video frame
-        processTrack = processDequeue(encoder, &trackIdx, &debugNumFrames, buffers, muxer, rawFp, mainDpy, mainDpyInfo, virtualDpy, orientation, false);
+        processDequeue(encoder, &trackIdx, &debugNumFrames, buffers, muxer, rawFp, mainDpy, mainDpyInfo, virtualDpy, orientation, false);
 
         // Process audio output (route AAC to muxer)
-        if (processTrack == NO_ERROR) {
-            processDequeue(audioEncoder, &audioTrackIdx, &debugNumAudioFrames, audioBuffers, muxer, rawFp, mainDpy, mainDpyInfo, virtualDpy, orientation, true);
-        }
+        processDequeue(audioEncoder, &audioTrackIdx, &debugNumAudioFrames, audioBuffers, muxer, rawFp, mainDpy, mainDpyInfo, virtualDpy, orientation, true);
     }
 
     ALOGV("Encoder stopping (req=%d)", gStopRequested);
